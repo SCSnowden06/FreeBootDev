@@ -13,9 +13,6 @@ class Hero:
         self.__health -= damage
 
 
-# don't touch above this line
-
-
 class Archer(Hero):
     def __init__(self, name, health, num_arrows):
         super().__init__(name, health)
@@ -24,7 +21,22 @@ class Archer(Hero):
     def shoot(self, target):
         if self.__num_arrows <= 0:
             raise Exception("not enough arrows")
-        else:
-            self.__num_arrows -= 1
-            target.take_damage(10)
+        self.__num_arrows -= 1
+        target.take_damage(10)
+
+
+# don't touch above this line
+
+
+class Wizard(Hero):
+    def __init__(self, name, health, mana):
+        super().__init__(name, health)
+        self.__mana = mana
+        pass
+
+    def cast(self, target):
+        if self.__mana < 25:
+            raise Exception("not enough mana")
+        self.__mana -= 25
+        target.take_damage(25)
         pass
