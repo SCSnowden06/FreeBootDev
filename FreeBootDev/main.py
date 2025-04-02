@@ -19,3 +19,4 @@ class Human:
 
     def get_position(self):
         return (self.__pos_x, self.__pos_y)
+#adding this comment as an identifier so i can figure out wth is going on with github
