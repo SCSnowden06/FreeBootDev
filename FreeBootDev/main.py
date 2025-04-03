@@ -1,62 +1,79 @@
-def main():
-    dragons = [
-        Dragon("Green Dragon", 0, 0, 1),
-        Dragon("Red Dragon", 2, 2, 2),
-        Dragon("Blue Dragon", 4, 3, 3),
-        Dragon("Black Dragon", 5, -1, 4),
-    ]
-
-    # don't touch above this line
-
-    for dragon in dragons:
-        describe(dragon)
-
-    dragons[0].breathe_fire(3, 3, dragons)
-    dragons[1].breathe_fire(3, 3, dragons)
-    dragons[2].breathe_fire(3, 3, dragons)
-    dragons[3].breathe_fire(3, 3, dragons)
-
-
-# don't touch below this line
-
-
-def describe(dragon):
-    print(f"{dragon.name} is at {dragon.pos_x}/{dragon.pos_y}")
-
-
 class Unit:
     def __init__(self, name, pos_x, pos_y):
         self.name = name
         self.pos_x = pos_x
         self.pos_y = pos_y
 
-    def in_area(self, x_1, y_1, x_2, y_2):
+    def in_area(self, x1, y1, x2, y2):
         return (
-            self.pos_x >= x_1
-            and self.pos_x <= x_2
-            and self.pos_y >= y_1
-            and self.pos_y <= y_2
+            self.pos_x >= x1
+            and self.pos_x <= x2
+            and self.pos_y >= y1
+            and self.pos_y <= y2
         )
 
 
+# don't touch above this line
+
+
 class Dragon(Unit):
-    def __init__(self, name, pos_x, pos_y, fire_range):
+    def __init__(self, name, pos_x, pos_y, height, width, fire_range):
         super().__init__(name, pos_x, pos_y)
-        self.__fire_range = fire_range
+        self.height = height
+        self.width = width
+        self.fire_range = fire_range
+        self.__hit_box = Rectangle(
+            pos_x - width / 2,
+            pos_y - height / 2,
+            pos_x + width / 2,
+            pos_y + height / 2,
+        )
+        
 
-    def breathe_fire(self, x, y, units):
-        print("====================================")
-        print(f"{self.name} breathes fire at {x}/{y} with range {self.__fire_range}")
-        print("------------------------------------")
-        for unit in units:
-            in_area = unit.in_area(
-                x - self.__fire_range,
-                y - self.__fire_range,
-                x + self.__fire_range,
-                y + self.__fire_range,
-            )
-            if in_area:
-                print(f"{unit.name} is hit by the fire")
+    def in_area(self, x1, y1, x2, y2):
+        if super().in_area(x1, y1, x2, y2):
+            return True
+        area = Rectangle(x1, y1, x2, y2)
+        if self.__hit_box.overlaps(area):
+            return True
+        return False
+        
 
 
-main()
+# don't touch below this line
+
+
+class Rectangle:
+    def overlaps(self, rect):
+        return (
+            self.get_left_x() <= rect.get_right_x()
+            and self.get_right_x() >= rect.get_left_x()
+            and self.get_top_y() >= rect.get_bottom_y()
+            and self.get_bottom_y() <= rect.get_top_y()
+        )
+
+    def __init__(self, x1, y1, x2, y2):
+        self.__x1 = x1
+        self.__y1 = y1
+        self.__x2 = x2
+        self.__y2 = y2
+
+    def get_left_x(self):
+        if self.__x1 < self.__x2:
+            return self.__x1
+        return self.__x2
+
+    def get_right_x(self):
+        if self.__x1 > self.__x2:
+            return self.__x1
+        return self.__x2
+
+    def get_top_y(self):
+        if self.__y1 > self.__y2:
+            return self.__y1
+        return self.__y2
+
+    def get_bottom_y(self):
+        if self.__y1 < self.__y2:
+            return self.__y1
+        return self.__y2
